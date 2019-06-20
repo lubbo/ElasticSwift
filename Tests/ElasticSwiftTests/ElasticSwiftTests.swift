@@ -9,14 +9,14 @@ class ElasticSwiftTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        self.client = RestClient()
+//        self.client = RestClient()
 //        let cred = ClientCredential(username: "elastic", password: "elastic")
 //        let ssl = SSLConfiguration(certPath: "/usr/local/Cellar/kibana/6.1.2/config/certs/elastic-certificates.der", isSelf: true)
 //        let settings = Settings(forHosts: ["https://localhost:9200"], withCredentials: cred, withSSL: true, sslConfig: ssl)
 //        self.client = RestClient(settings: settings)
-//        let settings = Settings(forHost:"http://192.168.1.51:9200")
-//        self.client = RestClient(settings: settings)
-//        
+        let settings = Settings(forHost:"http://192.168.1.51:9200")
+        self.client = RestClient(settings: settings)
+//
         do {
             let deleteExpectation = expectation(description: "deleteIndex")
             try deleteIndex { (response, error) in
@@ -272,6 +272,7 @@ class ElasticSwiftTests: XCTestCase {
     func testSearch() throws {
         
         try testIndex()
+        sleep(2)
         try testIndexNoId()
         
         
@@ -285,7 +286,7 @@ class ElasticSwiftTests: XCTestCase {
             XCTAssertTrue(response!.shards.failed == 0)
             XCTAssertTrue(response!.shards.total > 0)
             XCTAssertTrue(response?.timedOut ?? true == false)
-            XCTAssertTrue(response?.hits?.total == 2)
+            XCTAssertTrue(response?.hits?.total?.value == 2)
             
             let firstResult = response?.hits?.hits[0]
             let secondResult = response?.hits?.hits[1]
