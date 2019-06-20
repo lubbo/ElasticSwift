@@ -11,6 +11,18 @@ import Foundation
 
 public class ConstantScoreQueryBuilder: QueryBuilder {
     
+    public var queryBuilder: QueryBuilder?
+    public var boost: Decimal?
+    
+    typealias BuilderClosure = (ConstantScoreQueryBuilder) -> Void
+    
+    init() {}
+    
+    convenience init(builderClosure: BuilderClosure) {
+        self.init()
+        builderClosure(self)
+    }
+    
     public var query: Query {
         return ConstantScoreQuery(withBuilder: self)
     }
@@ -21,18 +33,22 @@ public class ConstantScoreQueryBuilder: QueryBuilder {
 
 public class BoolQueryBuilder: QueryBuilder {
     
-    var boost: Float = 0.0
-    
-    private let MUST: String = "must"
-    private let MUST_NOT: String = "must_not"
-    private let SHOULD: String = "should"
-    private let FILTER: String = "filter"
+    var boost: Decimal?
     
     private var mustClauses:[QueryBuilder] = []
     private var mustNotClauses:[QueryBuilder] = []
     private var shouldClauses:[QueryBuilder] = []
     private var filterClauses:[QueryBuilder] = []
-    private var minimumShouldMatch: String = ""
+    private var minimumShouldMatch: Int?
+    
+    typealias BuilderClosure = (BoolQueryBuilder) -> Void
+    
+    init() {}
+    
+    convenience init(builderClosure: BuilderClosure) {
+        self.init()
+        builderClosure(self)
+    }
     
     @discardableResult
     public func must<T: QueryBuilder>(query: T) -> BoolQueryBuilder {
@@ -59,17 +75,38 @@ public class BoolQueryBuilder: QueryBuilder {
     }
     
     public func set(minimumShouldMatch: Int) -> BoolQueryBuilder {
-        self.minimumShouldMatch = String(minimumShouldMatch)
+        self.minimumShouldMatch = minimumShouldMatch
         return self
     }
     
-    public func set(boost: Float) -> Self {
+    public func set(boost: Decimal) -> BoolQueryBuilder {
+        self.boost = boost
         return self
+    }
+    
+    public func getMustClauses() -> [QueryBuilder] {
+        return self.mustClauses
+    }
+    
+    public func getMustNotClauses() -> [QueryBuilder] {
+        return self.mustNotClauses
+    }
+    
+    public func getFilterClauses() -> [QueryBuilder] {
+        return self.filterClauses
+    }
+    
+    public func getShouldClauses() -> [QueryBuilder] {
+        return self.shouldClauses
+    }
+    
+    public func getMinimumShouldMatch() -> Int? {
+        return self.minimumShouldMatch
     }
     
     public var query: Query {
         get {
-            return BoolQuery(must: self.mustClauses, mustnot: self.mustNotClauses, should: self.shouldClauses, filter: self.filterClauses)
+            return BoolQuery(withBuilder: self)
         }
     }
 }
@@ -77,6 +114,24 @@ public class BoolQueryBuilder: QueryBuilder {
 // MARK:- Dis Max Query Builder
 
 public class DisMaxQueryBuilder: QueryBuilder {
+    
+    public var tieBreaker: Decimal?
+    public var boost: Decimal?
+    public var queryBuilders: [QueryBuilder] = []
+    
+    typealias BuilderClosure = (DisMaxQueryBuilder) -> Void
+    
+    init() {}
+    
+    convenience init(builderClosure: BuilderClosure) {
+        self.init()
+        builderClosure(self)
+    }
+    
+    public func add(queryBuilder: QueryBuilder) -> DisMaxQueryBuilder {
+        self.queryBuilders.append(queryBuilder)
+        return self
+    }
     
     public var query: Query {
         return DisMaxQuery(withBuilder: self)
@@ -88,6 +143,23 @@ public class DisMaxQueryBuilder: QueryBuilder {
 
 public class FunctionScoreQueryBuilder: QueryBuilder {
     
+    public var queryBuilder: QueryBuilder?
+    public var boost: Decimal?
+    public var boostMode: BoostMode?
+    public var maxBoost: Decimal?
+    public var scoreMode: ScoreMode?
+    public var minScore: Decimal?
+    public var functions: [ScoreFunction] = [ScoreFunction]()
+    
+    typealias BuilderClosure = (FunctionScoreQueryBuilder) -> Void
+    
+    init() {}
+    
+    convenience init(builderClosure: BuilderClosure) {
+        self.init()
+        builderClosure(self)
+    }
+    
     public var query: Query {
         return FunctionScoreQuery(withBuilder: self)
     }
@@ -97,6 +169,19 @@ public class FunctionScoreQueryBuilder: QueryBuilder {
 // MARK:- Boosting Query Builder
 
 public class BoostingQueryBuilder: QueryBuilder {
+    
+    public var negativeQuery: Query?
+    public var positiveQuery: Query?
+    public var negativeBoost: Decimal?
+    
+    typealias BuilderClosure = (BoostingQueryBuilder) -> Void
+    
+    init() {}
+    
+    convenience init(builderClosure: BuilderClosure) {
+        self.init()
+        builderClosure(self)
+    }
     
     public var query: Query {
         return BoostingQuery(withBuilder: self)

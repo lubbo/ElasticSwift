@@ -10,9 +10,18 @@ import Foundation
 // MARK:- Term Query Builder
 
 public class TermQueryBuilder: QueryBuilder {
-    var field: String?
-    var value: String?
-    var boost: Double?
+    public var field: String?
+    public var value: String?
+    public var boost: Decimal?
+    
+    typealias BuilderClosure = (TermQueryBuilder) -> Void
+    
+    init() {}
+    
+    convenience init(builderClosure: BuilderClosure) {
+        self.init()
+        builderClosure(self)
+    }
     
     public var query: Query {
         get {
@@ -26,8 +35,17 @@ public class TermQueryBuilder: QueryBuilder {
 
 public class TermsQueryBuilder: QueryBuilder {
     
-    var field: String?
-    var value: [String]?
+    public var field: String?
+    public var value: [String]?
+    
+    typealias BuilderClosure = (TermsQueryBuilder) -> Void
+    
+    init() {}
+    
+    convenience init(builderClosure: BuilderClosure) {
+        self.init()
+        builderClosure(self)
+    }
     
     public var query: Query {
         get {
@@ -41,15 +59,24 @@ public class TermsQueryBuilder: QueryBuilder {
 
 public class RangeQueryBuilder: QueryBuilder {
     
-    var field: String?
-    var gte: String?
-    var gt: String?
-    var lte: String?
-    var lt: String?
-    var format: String?
-    var timeZone: String?
-    var boost: Double?
-    var relation: ShapeRelation?
+    public var field: String?
+    public var gte: String?
+    public var gt: String?
+    public var lte: String?
+    public var lt: String?
+    public var format: String?
+    public var timeZone: String?
+    public var boost: Decimal?
+    public var relation: ShapeRelation?
+    
+    typealias BuilderClosure = (RangeQueryBuilder) -> Void
+    
+    init() {}
+    
+    convenience init(builderClosure: BuilderClosure) {
+        self.init()
+        builderClosure(self)
+    }
     
     
     public var query: Query {
@@ -65,7 +92,16 @@ public class RangeQueryBuilder: QueryBuilder {
 
 public class ExistsQueryBuilder: QueryBuilder {
     
-    var field: String?
+    public var field: String?
+    
+    typealias BuilderClosure = (ExistsQueryBuilder) -> Void
+    
+    init() {}
+    
+    convenience init(builderClosure: BuilderClosure) {
+        self.init()
+        builderClosure(self)
+    }
     
     public var query: Query {
         get {
@@ -80,9 +116,18 @@ public class ExistsQueryBuilder: QueryBuilder {
 
 public class PrefixQueryBuilder: QueryBuilder {
     
-    var field: String?
-    var value: String?
-    var boost: Double?
+    public var field: String?
+    public var value: String?
+    public var boost: Decimal?
+    
+    typealias BuilderClosure = (PrefixQueryBuilder) -> Void
+    
+    init() {}
+    
+    convenience init(builderClosure: BuilderClosure) {
+        self.init()
+        builderClosure(self)
+    }
     
     public var query: Query {
         get {
@@ -97,9 +142,18 @@ public class PrefixQueryBuilder: QueryBuilder {
 
 public class WildCardQueryBuilder: QueryBuilder {
     
-    var field: String?
-    var value: String?
-    var boost: Double?
+    public var field: String?
+    public var value: String?
+    public var boost: Decimal?
+    
+    typealias BuilderClosure = (WildCardQueryBuilder) -> Void
+    
+    init() {}
+    
+    convenience init(builderClosure: BuilderClosure) {
+        self.init()
+        builderClosure(self)
+    }
     
     public var query: Query {
         get {
@@ -113,11 +167,20 @@ public class WildCardQueryBuilder: QueryBuilder {
 
 public class RegexpQueryBuilder: QueryBuilder {
     
-    var field: String?
-    var value: String?
-    var boost: Double?
-    var regexFlags: [RegexFlag]?
-    var maxDeterminizedStates: Int?
+    public var field: String?
+    public var value: String?
+    public var boost: Decimal?
+    public var regexFlags: [RegexFlag]?
+    public var maxDeterminizedStates: Int?
+    
+    typealias BuilderClosure = (RegexpQueryBuilder) -> Void
+    
+    init() {}
+    
+    convenience init(builderClosure: BuilderClosure) {
+        self.init()
+        builderClosure(self)
+    }
     
     public var query: Query {
         get {
@@ -131,13 +194,22 @@ public class RegexpQueryBuilder: QueryBuilder {
 
 public class FuzzyQueryBuilder: QueryBuilder {
     
-    var field: String?
-    var value: String?
-    var boost: Double?
-    var fuzziness: Int?
-    var prefixLenght: Int?
-    var maxExpansions: Int?
-    var transpositions: Bool?
+    public var field: String?
+    public var value: String?
+    public var boost: Decimal?
+    public var fuzziness: Int?
+    public var prefixLenght: Int?
+    public var maxExpansions: Int?
+    public var transpositions: Bool?
+    
+    typealias BuilderClosure = (FuzzyQueryBuilder) -> Void
+    
+    init() {}
+    
+    convenience init(builderClosure: BuilderClosure) {
+        self.init()
+        builderClosure(self)
+    }
     
     public var query: Query {
         get {
@@ -151,7 +223,16 @@ public class FuzzyQueryBuilder: QueryBuilder {
 
 public class TypeQueryBuilder: QueryBuilder {
     
-    var type: String?
+    public var type: String?
+    
+    typealias BuilderClosure = (TypeQueryBuilder) -> Void
+    
+    init() {}
+    
+    convenience init(builderClosure: BuilderClosure) {
+        self.init()
+        builderClosure(self)
+    }
     
     public var query: Query {
         get {
@@ -166,8 +247,17 @@ public class TypeQueryBuilder: QueryBuilder {
 
 public class IdsQueryBuilder: QueryBuilder {
     
-    var type: String?
-    var ids: [String]?
+    public var type: String?
+    public var ids: [String]?
+    
+    typealias BuilderClosure = (IdsQueryBuilder) -> Void
+    
+    init() {}
+    
+    convenience init(builderClosure: BuilderClosure) {
+        self.init()
+        builderClosure(self)
+    }
     
     public var query: Query {
         get {

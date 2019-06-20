@@ -10,6 +10,8 @@ import Foundation
 
 public class SearchRequestBuilder<T: Codable>: RequestBuilder {
     
+    typealias BuilderClosure = (SearchRequestBuilder) -> Void
+    
     public typealias RequestType = SearchRequest<T>
     
     let client: ESClient
@@ -21,7 +23,8 @@ public class SearchRequestBuilder<T: Codable>: RequestBuilder {
     var sort: Sort?
     var fetchSource: Bool?
     var explain: Bool?
-    var minScore: Float?
+
+    var minScore: Decimal?
     public var completionHandler: ((SearchResponse<T>?,Error?) -> ())?
     
     init(withClient client: ESClient, index: String) {
@@ -39,11 +42,17 @@ public class SearchRequestBuilder<T: Codable>: RequestBuilder {
         self.index = indices.compactMap({$0}).joined(separator: ",")
     }
     
+    convenience init(withClient client: ESClient, index: String, builderClosure: BuilderClosure) {
+        self.init(withClient: client, index: index)
+        builderClosure(self)
+    }
+    
     public func set(indices: String...) -> Self {
         self.index = indices.compactMap({$0}).joined(separator: ",")
         return self
     }
     
+    @available(*, deprecated, message: "Elasticsearch has deprecated use of custom types and will be remove in 7.0")
     public func set(types: String...) -> Self {
         self.type = types.compactMap({$0}).joined(separator: ",")
         return self
@@ -79,7 +88,7 @@ public class SearchRequestBuilder<T: Codable>: RequestBuilder {
         return self
     }
     
-    public func set(minScore: Float) -> Self {
+    public func set(minScore: Decimal) -> Self {
         self.minScore = minScore
         return self
     }
@@ -109,8 +118,7 @@ public class SearchRequest<T: Codable>: Request {
     var sort: Sort?
     var fetchSource: Bool?
     var explain: Bool?
-    var minScore: Float?
-    
+    var minScore: Decimal?
     
     init(withBuilder builder: SearchRequestBuilder<T>) throws {
         self.client = builder.client

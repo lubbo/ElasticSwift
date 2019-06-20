@@ -112,10 +112,28 @@ public enum RegexFlag: String {
     case ALL = "ALL"
 }
 
+
+public enum ScoreMode: String {
+    case FIRST = "first"
+    case AVG = "avg"
+    case MAX = "max"
+    case SUM = "sum"
+    case MIN = "min"
+    case MULTIPLY = "multiply"
+}
+
+public enum BoostMode: String {
+    case MULTIPLY = "multiply"
+    case REPLACE = "replace"
+    case SUM = "sum"
+    case AVG = "avg"
+    case MIN = "min"
+    case MAX = "max"
+}
+
 public enum IndexRefresh: String {
     case TRUE = "true"
     case FALSE = "false"
     case WAIT = "wait_for"
 }
-
 

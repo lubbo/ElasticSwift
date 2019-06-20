@@ -10,6 +10,8 @@ import Foundation
 
 public class IndexRequestBuilder<T: Codable>: RequestBuilder {
     
+    typealias BuilderClosure = (IndexRequestBuilder) -> Void
+    
     public typealias RequestType = IndexRequest
     
     let client: ESClient
@@ -29,11 +31,17 @@ public class IndexRequestBuilder<T: Codable>: RequestBuilder {
         self.source = source
     }
     
+    convenience init(withClient client: ESClient, index : String, source: T, builderClosure: BuilderClosure) {
+        self.init(withClient: client, index: index, source: source)
+        builderClosure(self)
+    }
+    
     public func set(index: String) -> Self {
         self.index = index
         return self
     }
     
+    @available(*, deprecated, message: "Elasticsearch has deprecated use of custom types and will be remove in 7.0")
     public func set(type: String) -> Self {
         self.type = type
         return self

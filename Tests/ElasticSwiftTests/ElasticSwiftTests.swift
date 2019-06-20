@@ -14,9 +14,9 @@ class ElasticSwiftTests: XCTestCase {
 //        let ssl = SSLConfiguration(certPath: "/usr/local/Cellar/kibana/6.1.2/config/certs/elastic-certificates.der", isSelf: true)
 //        let settings = Settings(forHosts: ["https://localhost:9200"], withCredentials: cred, withSSL: true, sslConfig: ssl)
 //        self.client = RestClient(settings: settings)
-        let settings = Settings(forHost:"http://192.168.1.59:9200")
-        self.client = RestClient(settings: settings)
-        
+//        let settings = Settings(forHost:"http://192.168.1.51:9200")
+//        self.client = RestClient(settings: settings)
+//        
         do {
             let deleteExpectation = expectation(description: "deleteIndex")
             try deleteIndex { (response, error) in
@@ -133,21 +133,21 @@ class ElasticSwiftTests: XCTestCase {
     }
     
     func createIndex(withCompletionHandler completionHandler: @escaping (CreateIndexResponse?,Error?) -> () ) throws {
-        let request = try self.client?.admin.indices().create(withName: "test")
+        let request = try self.client?.admin.indices().createIndex(withName: "test")
             .set(completionHandler: completionHandler)
             .build()
         try request?.execute()
     }
     
     func deleteIndex(withCompletionHandler completionHandler: @escaping (DeleteIndexResponse?,Error?) -> () ) throws {
-        let request = try self.client?.admin.indices().delete(withName: "test")
+        let request = try self.client?.admin.indices().deleteIndex(withName: "test")
             .set(completionHandler: completionHandler)
             .build()
         try request?.execute()
     }
     
     func getIndex(withCompletionHandler completionHandler: @escaping (GetIndexResponse?,Error?) -> ()) throws {
-        let request = try self.client?.admin.indices().get(withName: "test")
+        let request = try self.client?.admin.indices().getIndex(withName: "test")
             .set(completionHandler: completionHandler)
             .build()
         try request?.execute()
@@ -285,7 +285,7 @@ class ElasticSwiftTests: XCTestCase {
             XCTAssertTrue(response!.shards.failed == 0)
             XCTAssertTrue(response!.shards.total > 0)
             XCTAssertTrue(response?.timedOut ?? true == false)
-            XCTAssertTrue(response?.hits?.total?.value == 2)
+            XCTAssertTrue(response?.hits?.total == 2)
             
             let firstResult = response?.hits?.hits[0]
             let secondResult = response?.hits?.hits[1]

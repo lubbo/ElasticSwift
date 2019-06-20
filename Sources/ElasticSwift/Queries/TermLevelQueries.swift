@@ -11,10 +11,13 @@ import Foundation
 
 public class TermQuery: Query {
     
+    private static let BOOST = "boost"
+    private static let VALUE = "value"
+    
     public let name: String = "term"
-    var field: String
-    var value: String
-    var boost: Double?
+    public let field: String
+    public let value: String
+    public let boost: Decimal?
     
     public init(withBuilder builder: TermQueryBuilder) {
         self.field = builder.field!
@@ -25,8 +28,8 @@ public class TermQuery: Query {
     public func toDic() -> [String : Any] {
         var dic: [String: Any] = [:]
         if let boost = boost {
-            dic = [self.field: ["value": self.value,
-                                "boost": boost]]
+            dic = [self.field: [TermQuery.VALUE: self.value,
+                                TermQuery.BOOST: boost]]
         } else {
             dic = [self.field: self.value]
         }
@@ -40,8 +43,8 @@ public class TermQuery: Query {
 public class TermsQuery: Query {
     public let name: String = "terms"
     
-    var field: String
-    var value: [String]
+    public let field: String
+    public let value: [String]
     
     public init(withBuilder builder: TermsQueryBuilder) {
         self.field = builder.field!
@@ -59,23 +62,34 @@ public class TermsQuery: Query {
 // MARK:- Range Query
 
 public class RangeQuery: Query {
+    
+    private static let GT = "gt"
+    private static let GTE = "gte"
+    private static let LT = "lt"
+    private static let LTE = "lte"
+    private static let BOOST = "boost"
+    private static let FORMAT = "format"
+    private static let TIME_ZONE = "time_zone"
+    private static let RELATION = "relation"
+    
     public let name: String = "range"
     
-    var field: String
-    var gte: String?
-    var gt: String?
-    var lte: String?
-    var lt: String?
-    var format: String?
-    var timeZone: String?
-    var boost: Double?
-    var relation: ShapeRelation?
+    public let field: String
+    public let gte: String?
+    public let gt: String?
+    public let lte: String?
+    public let lt: String?
+    public let format: String?
+    public let timeZone: String?
+    public let boost: Decimal?
+    public let relation: ShapeRelation?
     
     public init(withBuilder builder: RangeQueryBuilder) {
         self.field = builder.field!
         self.gt = builder.gt
         self.gte = builder.gte
         self.lt = builder.lt
+        self.lte = builder.lte
         self.format = builder.format
         self.timeZone = builder.timeZone
         self.boost = builder.boost
@@ -85,28 +99,28 @@ public class RangeQuery: Query {
     public func toDic() -> [String : Any] {
         var dic: [String: Any] = [:]
         if let gt = self.gt {
-            dic["gt"] = gt
+            dic[RangeQuery.GT] = gt
         }
         if let gte = self.gte {
-            dic["gte"] = gte
+            dic[RangeQuery.GTE] = gte
         }
         if let lt = self.lt {
-            dic["lt"] = lt
+            dic[RangeQuery.LT] = lt
         }
         if let lte = self.lte {
-            dic["lte"] = lte
+            dic[RangeQuery.LTE] = lte
         }
         if let boost = self.boost {
-            dic["boost"] = boost
+            dic[RangeQuery.BOOST] = boost
         }
         if let format = self.format {
-            dic["format"] = format
+            dic[RangeQuery.FORMAT] = format
         }
         if let timeZone = self.timeZone {
-            dic["time_zone"] = timeZone
+            dic[RangeQuery.TIME_ZONE] = timeZone
         }
         if let relation = self.relation {
-            dic["relation"] = relation
+            dic[RangeQuery.RELATION] = relation
         }
         return [self.name: [self.field: dic]]
     }
@@ -117,16 +131,19 @@ public class RangeQuery: Query {
 // MARK:- Exists Query
 
 public class ExistsQuery: Query {
+    
+    private static let FIELD = "field"
+    
     public let name: String = "exists"
     
-    var field: String
+    public let field: String
     
     public init(withBuilder builder: ExistsQueryBuilder) {
         self.field = builder.field!
     }
     
     public func toDic() -> [String : Any] {
-        let dic: [String: Any] = ["field": self.field]
+        let dic: [String: Any] = [ExistsQuery.FIELD: self.field]
         return [self.name: dic]
     }
     
@@ -136,11 +153,15 @@ public class ExistsQuery: Query {
 // MARK:- Prefix Query
 
 public class PrefixQuery: Query {
+    
+    private static let BOOST = "boost"
+    private static let VALUE = "value"
+    
     public let name: String = "prefix"
     
-    var field: String
-    var value: String
-    var boost: Double?
+    public let field: String
+    public let value: String
+    public let boost: Decimal?
     
     public init(withBuilder builder: PrefixQueryBuilder) {
         self.field = builder.field!
@@ -151,7 +172,7 @@ public class PrefixQuery: Query {
     public func toDic() -> [String : Any] {
         var dic: [String: Any] = [:]
         if let boost = self.boost {
-            dic = [self.field: ["value": self.value, "boost": boost]]
+            dic = [self.field: [PrefixQuery.VALUE: self.value, PrefixQuery.BOOST: boost]]
         } else {
             dic = [self.field: self.value]
         }
@@ -164,11 +185,15 @@ public class PrefixQuery: Query {
 // MARK:- WildCard Query
 
 public class WildCardQuery: Query {
+    
+    private static let BOOST = "boost"
+    private static let VALUE = "value"
+    
     public let name: String = "wildcard"
     
-    var field: String
-    var value: String
-    var boost: Double?
+    public let field: String
+    public let value: String
+    public let boost: Decimal?
     
     public init(withBuilder builder: WildCardQueryBuilder) {
         self.field = builder.field!
@@ -179,7 +204,7 @@ public class WildCardQuery: Query {
     public func toDic() -> [String : Any] {
         var dic: [String: Any] = [:]
         if let boost = self.boost {
-            dic = [self.field: ["value": self.value, "boost": boost]]
+            dic = [self.field: [WildCardQuery.VALUE: self.value, WildCardQuery.BOOST: boost]]
         } else {
             dic = [self.field: self.value]
         }
@@ -192,13 +217,19 @@ public class WildCardQuery: Query {
 // MARK:- Regexp Query
 
 public class RegexpQuery: Query {
+    
+    private static let BOOST = "boost"
+    private static let FLAGS = "flags"
+    private static let MAX_DETERMINIZED_STATUS = "max_determinized_states"
+    private static let VALUE = "value"
+    
     public let name: String = "regexp"
     
-    var field: String
-    var value: String
-    var boost: Double?
-    var regexFlags: String?
-    var maxDeterminizedStates: Int?
+    public let field: String
+    public let value: String
+    public let boost: Decimal?
+    public let regexFlags: String?
+    public let maxDeterminizedStates: Int?
     
     public init(withBuilder builder: RegexpQueryBuilder) {
         self.field = builder.field!
@@ -211,15 +242,15 @@ public class RegexpQuery: Query {
     public func toDic() -> [String : Any] {
         var dic: [String: Any] = [:]
         if let boost = self.boost {
-            dic["boost"] = boost
+            dic[RegexpQuery.BOOST] = boost
         }
         if let regexFlags = self.regexFlags {
-            dic["flags"] = regexFlags
+            dic[RegexpQuery.FLAGS] = regexFlags
         }
         if let maxDeterminizedStates = self.maxDeterminizedStates {
-            dic["max_determinized_states"] = maxDeterminizedStates
+            dic[RegexpQuery.MAX_DETERMINIZED_STATUS] = maxDeterminizedStates
         }
-        dic["value"] = self.value
+        dic[RegexpQuery.VALUE] = self.value
         return [self.name: [self.field: dic]]
     }
     
@@ -229,15 +260,23 @@ public class RegexpQuery: Query {
 // MARK:- Fuzzy Query
 
 public class FuzzyQuery: Query {
+    
+    private static let BOOST = "boost"
+    private static let FUZZINESS = "fuzziness"
+    private static let PREFIX_LENGTH = "prefix_length"
+    private static let MAX_EXPANSIONS = "max_expansions"
+    private static let TRANSPOSITIONS = "transpositions"
+    private static let VALUE = "value"
+    
     public let name: String = "fuzzy"
     
-    var field: String
-    var value: String
-    var boost: Double?
-    var fuzziness: Int?
-    var prefixLenght: Int?
-    var maxExpansions: Int?
-    var transpositions: Bool?
+    public let field: String
+    public let value: String
+    public let boost: Decimal?
+    public let fuzziness: Int?
+    public let prefixLenght: Int?
+    public let maxExpansions: Int?
+    public let transpositions: Bool?
     
     public init(withBuilder builder: FuzzyQueryBuilder) {
         self.field = builder.field!
@@ -252,22 +291,22 @@ public class FuzzyQuery: Query {
     public func toDic() -> [String : Any] {
         var dic: [String: Any] = [:]
         if let boost = self.boost {
-            dic["boost"] = boost
+            dic[FuzzyQuery.BOOST] = boost
         }
         if let fuzziness = self.fuzziness {
-            dic["fuzziness"] = fuzziness
+            dic[FuzzyQuery.FUZZINESS] = fuzziness
         }
         if let prefixLenght = self.prefixLenght {
-            dic["prefix_length"] = prefixLenght
+            dic[FuzzyQuery.PREFIX_LENGTH] = prefixLenght
         }
         if let maxExpansions = self.maxExpansions {
-            dic["max_expansions"] = maxExpansions
+            dic[FuzzyQuery.MAX_EXPANSIONS] = maxExpansions
         }
         if let transpositions = self.transpositions {
-            dic["transpositions"] = transpositions
+            dic[FuzzyQuery.TRANSPOSITIONS] = transpositions
         }
         
-        dic["value"] = self.value
+        dic[FuzzyQuery.VALUE] = self.value
         return [self.name: [self.field: dic]]
     }
     
@@ -277,16 +316,19 @@ public class FuzzyQuery: Query {
 // MARK:- Type Query
 
 public class TypeQuery: Query {
+    
+    private static let VALUE = "value"
+    
     public let name: String = "type"
     
-    var type: String
+    public let type: String
     
     public init(withBuilder builder: TypeQueryBuilder) {
         self.type = builder.type!
     }
     
     public func toDic() -> [String : Any] {
-        return [self.name: ["value": self.type]]
+        return [self.name: [TypeQuery.VALUE: self.type]]
     }
     
     
@@ -295,10 +337,14 @@ public class TypeQuery: Query {
 // MARK:- Ids Query
 
 public class IdsQuery: Query {
+    
+    private static let VALUES = "values"
+    private static let TYPE = "type"
+    
     public let name: String = "ids"
     
-    var type: String?
-    var ids: [String]
+    public let type: String?
+    public let ids: [String]
     
     public init(withBuilder builder: IdsQueryBuilder) {
         self.ids = builder.ids!
@@ -306,9 +352,9 @@ public class IdsQuery: Query {
     }
     
     public func toDic() -> [String : Any] {
-        var dic: [String: Any] = ["values": self.ids]
+        var dic: [String: Any] = [IdsQuery.VALUES: self.ids]
         if let type = self.type {
-            dic["type"] = type
+            dic[IdsQuery.TYPE] = type
         }
         return [self.name: dic]
     }

@@ -10,6 +10,8 @@ import Foundation
 
 public class DeleteRequestBuilder: RequestBuilder {
     
+    typealias BuilderClosure = (DeleteRequestBuilder) -> Void
+
     public typealias RequestType = DeleteRequest
     
     let client: ESClient
@@ -25,11 +27,17 @@ public class DeleteRequestBuilder: RequestBuilder {
         self.id = id
     }
     
+    convenience init(withClient client: ESClient, index : String, id: String,  builderClosure: BuilderClosure) {
+        self.init(withClient: client, index: index, id: id)
+        builderClosure(self)
+    }
+    
     public func set(index: String) -> Self {
         self.index = index
         return self
     }
     
+    @available(*, deprecated, message: "Elasticsearch has deprecated use of custom types and will be remove in 7.0")
     public func set(type: String) -> Self {
         self.type = type
         return self
