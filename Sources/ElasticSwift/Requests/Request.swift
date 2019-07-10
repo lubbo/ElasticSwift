@@ -60,7 +60,7 @@ public protocol Request {
 extension Request {
     
     public var serializer : Serializer {
-        return DefaultSerializer()
+        return self.client.serializer ?? DefaultSerializer()
     }
     
     public var parameters: [QueryParams:String]? {

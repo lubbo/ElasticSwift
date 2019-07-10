@@ -8,8 +8,8 @@ public class RestClient: ESClient {
     let admin: Admin
     
     public init(settings: Settings) {
-        self.admin = Admin(hosts: settings.hosts, credentials: settings.credentials, sslConfig: settings.sslConfig)
-        super.init(hosts: settings.hosts, credentials: settings.credentials, sslConfig: settings.sslConfig)
+        self.admin = Admin(hosts: settings.hosts, credentials: settings.credentials, sslConfig: settings.sslConfig, serializer: settings.serializer)
+        super.init(hosts: settings.hosts, credentials: settings.credentials, sslConfig: settings.sslConfig, serializer: settings.serializer)
     }
     
     public convenience init() {
@@ -75,6 +75,7 @@ public class Settings {
     var hosts: [Host]
     var credentials: ClientCredential?
     var sslConfig: SSLConfiguration?
+    public var serializer: Serializer?
     
     private convenience init(withCredentials credentials: ClientCredential? = nil) {
         self.init(forHost: Host(string: "http://localhost:9200")!)
@@ -145,9 +146,11 @@ struct ESClientConstants {
 public class ESClient {
     
     let transport: Transport
+    var serializer: Serializer?
     
-    init(hosts: [Host], credentials: ClientCredential? = nil, sslConfig: SSLConfiguration? = nil) {
+    init(hosts: [Host], credentials: ClientCredential? = nil, sslConfig: SSLConfiguration? = nil, serializer: Serializer? = nil) {
         self.transport = Transport(forHosts: hosts, credentials: credentials, sslConfig: sslConfig)
+        self.serializer = serializer
     }
     
     func execute<R : Request>(request: R, completionHandler: @escaping (_ response: ESResponse) -> ()) throws {
