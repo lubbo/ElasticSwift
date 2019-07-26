@@ -60,8 +60,8 @@ extension Response {
             let esError = try ElasticsearchError.create(fromESResponse: response, withSerializer: serializer)
             throw esError
         } catch {
-            let message = "Error decoding response with data: " + (String(bytes: data, encoding: .utf8) ?? "nil") + " Underlying error: \(decodingError.debugDescription)"
-            throw RequestConstants.Errors.Response.Deserialization(content: message)
+            let message = "Error decoding response with data: " + (String(bytes: data, encoding: .utf8) ?? "nil") + " Underlying error: " + (decodingError?.localizedDescription ?? "nil")
+            throw RequestConstants.Errors.Response.Deserialization(content: message, underlyingError: decodingError)
         }
     }
     
